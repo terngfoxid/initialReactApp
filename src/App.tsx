@@ -1,24 +1,16 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import MainController from './controller/main.controller';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App" style={{minHeight:'100vh',minWidth:'100vW',backgroundColor: '#DADADA',position:'relative'}}>
+      <nav style={{position:'absolute',top:0,height:'30px',width:'100vW',backgroundColor: '#4600a7ff'}}></nav>
+      <main style={{paddingTop:'30px' , paddingBottom:'30px'}}>
+        <MainController />
+      </main>
+      <footer style={{position:'absolute',bottom:0,height: '30px',width:'100vW',backgroundColor: '#d10000ff'}}></footer>
     </div>
   );
 }

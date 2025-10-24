@@ -19,7 +19,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return storedAuth === 'true';
   });
 
-  // Sync localStorage whenever isAuthenticated changes
   useEffect(() => {
     localStorage.setItem('isAuthenticated', String(isAuthenticated));
   }, [isAuthenticated]);

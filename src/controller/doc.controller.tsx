@@ -7,7 +7,6 @@ const DocController = (
         } />
         <Route element={<ProtectedRoute />}>
             <Route path="/doc_auth" element={<div>Doc with Auth</div>} />
-            {/* Add more protected routes here */}
         </Route>
     </>
 )

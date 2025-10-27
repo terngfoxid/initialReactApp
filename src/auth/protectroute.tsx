@@ -13,7 +13,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ permission }) => {
   }
 
   if (permission) {
-    const user  = Auth.getCurrentUser()
+    //const user  = Auth.getCurrentUser()
     //permission denined
     //return <Navigate to="/unauthorized" replace />;
   }

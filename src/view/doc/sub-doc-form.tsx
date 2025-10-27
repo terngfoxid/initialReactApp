@@ -7,7 +7,7 @@ interface Props {
     onDelete: () => void;
 }
 
-export function SubDocEditor({ subDoc, disabled, onChange, onDelete }: Props) {
+export default function SubDocForm({ subDoc, disabled, onChange, onDelete }: Props) {
     const handleFieldChange = (field: keyof ISubDoc, value: string) => {
         onChange({ ...subDoc, [field]: value });
     };
@@ -47,7 +47,7 @@ export function SubDocEditor({ subDoc, disabled, onChange, onDelete }: Props) {
             </button>
 
             {subDoc.sub_doc.map((child, i) => (
-                <SubDocEditor
+                <SubDocForm
                     key={"sub_doc_" + i}
                     subDoc={child}
                     disabled={disabled}

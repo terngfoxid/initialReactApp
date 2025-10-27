@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { IDoc } from "../../model/doc.model";
 import { Link } from "react-router-dom";
+import DataTable from "../../share-component/datatable";
 
 export default function DocListPage() {
     const [DocData, setDocData] = useState<IDoc[]>([]);
@@ -21,6 +22,14 @@ export default function DocListPage() {
     }, []);
 
     const deleteAtIndex = (index: number) => {
+        setDocData(prevItems => {
+            const newItems = prevItems.slice();
+            newItems.splice(index, 1);
+            return newItems;
+        });
+    }
+
+    const deleteAtIndexCopy = (data: any, index: number) => {
         setDocData(prevItems => {
             const newItems = prevItems.slice();
             newItems.splice(index, 1);
@@ -59,5 +68,36 @@ export default function DocListPage() {
                 })}
             </tbody>
         </table>
+        <div>
+            <DataTable data={DocData} columns={[{
+                header: "Name",
+                key: "name",
+                class: ""
+            }, {
+                header: "Description",
+                key: "desc",
+                class: ""
+            }, {
+                header: 'Custom Action',
+                key: 'customAction',
+                class: "",
+                render: (row, index) => <div style={{display:"flex" ,justifyContent:"start"}}>
+                    <button onClick={() => alert(row.name)}>Say Hi</button>
+                </div>
+            }]}
+                showNo={true}
+                currentPage={1}
+                showAction={true}
+
+                viewMode="redirect"
+                viewRedirectTo={{
+                    path: "/doc/view/",
+                    key: "id",
+                    queryParam: ["name", "project"]
+                }}
+
+                deleteFunction={deleteAtIndexCopy}
+            />
+        </div>
     </div>);
 }

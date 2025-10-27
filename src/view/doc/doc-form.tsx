@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { IDoc, ISubDoc } from "../../model/doc.model";
 import { useEffect, useState } from "react";
-import { SubDocEditor } from "./sub-doc-form";
+import SubDocForm from "./sub-doc-form";
 
 type Params = {
     mode?: string;
@@ -116,7 +116,7 @@ export default function DocFormPage() {
             <button disabled={mode !== 'add' && mode !== 'edit'} onClick={handleAddSubDoc}>add Sub Doc</button>
             <div style={{ border: '1px solid', marginLeft: 'auto', marginRight: 'auto', width: '700px', minHeight: '30px' }}>
                 {DocData.sub_doc.map((sd, i) => (
-                    <SubDocEditor
+                    <SubDocForm
                         key={"sub_doc_"+i}
                         subDoc={sd}
                         disabled={mode !== 'add' && mode !== 'edit'}

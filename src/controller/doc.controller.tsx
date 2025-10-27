@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route } from "react-router-dom";
 import ProtectedRoute from "../auth/protectroute";
 import DocListPage from "../view/doc/doc-list";
 import DocFormPage from "../view/doc/doc-form";

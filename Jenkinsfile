@@ -31,13 +31,13 @@ pipeline {
 withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
                     withSonarQubeEnv("${SONARQUBE_ENV}") {
                         sh """
-                            echo "Running SonarQube Analysis..."
-                            "${scannerHome}/bin/sonar-scanner" \
-                                -Dsonar.projectKey=my-react-app \
-                                -Dsonar.sources=src \
-                                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-                                -Dsonar.login=${SONAR_TOKEN}
-                        """
+    echo "Running SonarQube Analysis..."
+    "${scannerHome}/bin/sonar-scanner" \
+        -Dsonar.projectKey=my-react-app \
+        -Dsonar.sources=src \
+        -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+        -Dsonar.login=${SONAR_TOKEN}
+"""
                     }
 }
                 }

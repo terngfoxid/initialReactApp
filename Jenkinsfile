@@ -25,9 +25,10 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                def scannerHome = tool 'SonarQube Scanner 7.2.0.5079'
+                script {
+                    def scannerHome = tool 'SonarQube Scanner 7.2.0.5079'
 
-                withSonarQubeEnv("${SONARQUBE_ENV}") {
+                    withSonarQubeEnv("${SONARQUBE_ENV}") {
                         sh """
                             echo "Running SonarQube Analysis..."
                             "${scannerHome}/bin/sonar-scanner" \
@@ -38,6 +39,7 @@ pipeline {
                                 -Dsonar.login=$SONAR_AUTH_TOKEN
                         """
                     }
+                }
             }
         }
 

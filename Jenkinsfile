@@ -35,6 +35,7 @@ pipeline {
                                 -Dsonar.projectKey=my-react-app \
                                 -Dsonar.sources=src \
                                 -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+                                -Dsonar.login=${SONAR_TOKEN}
                         """
                     }
                 }

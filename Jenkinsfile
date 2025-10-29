@@ -2,6 +2,11 @@ pipeline {
     agent any
     tools {
         nodejs 'NodeJS v24.10.0 (LTS)' 
+        sonarScanner 'SonarScanner'
+    }
+
+    environment {
+        SONARQUBE_ENV = 'SonarQubeServer' 
     }
 
     stages {
@@ -12,12 +17,35 @@ pipeline {
                 }
             }
         }
-        stage('Build') {
+
+        stage('Install Dependencies') {
             steps {
                 sh 'npm install'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv("${SONARQUBE_ENV}") {
+                    sh '''
+                        echo "Running SonarQube Analysis..."
+                        sonar-scanner \
+                            -Dsonar.projectKey=my-react-app \
+                            -Dsonar.sources=src \
+                            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                            -Dsonar.host.url=$SONAR_HOST_URL \
+                            -Dsonar.login=$SONAR_AUTH_TOKEN
+                    '''
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
                 sh 'npm run build'
             }
         }
+        
         stage('Deploy') {
             steps {
                 sh '''

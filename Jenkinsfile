@@ -34,9 +34,7 @@ pipeline {
                             "${scannerHome}/bin/sonar-scanner" \
                                 -Dsonar.projectKey=my-react-app \
                                 -Dsonar.sources=src \
-                                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
-                                -Dsonar.host.url=$SONAR_HOST_URL \
-                                -Dsonar.login=$SONAR_AUTH_TOKEN
+                                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
                         """
                     }
                 }

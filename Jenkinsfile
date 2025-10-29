@@ -2,7 +2,6 @@ pipeline {
     agent any
     tools {
         nodejs 'NodeJS v24.10.0 (LTS)' 
-        sonarScanner 'SonarScanner'
     }
 
     environment {
@@ -45,7 +44,7 @@ pipeline {
                 sh 'npm run build'
             }
         }
-        
+
         stage('Deploy') {
             steps {
                 sh '''

@@ -1,11 +1,11 @@
 pipeline {
     agent any
     tools {
-        nodejs 'NodeJS v24.10.0 (LTS)' 
+        nodejs 'NodeJS v24.10.0 (LTS)'
     }
 
     environment {
-        SONARQUBE_ENV = 'SonarQubeServer' 
+        SONARQUBE_ENV = 'SonarQubeServer'
     }
 
     stages {
@@ -27,19 +27,18 @@ pipeline {
             steps {
                 script {
                     def scannerHome = tool 'SonarQube Scanner 7.2.0.5079'
-
-withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-                    withSonarQubeEnv("${SONARQUBE_ENV}") {
-                        sh """
-    echo "Running SonarQube Analysis..."
-    "${scannerHome}/bin/sonar-scanner" \
-        -Dsonar.projectKey=my-react-app \
-        -Dsonar.sources=src \
-        -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
-        -Dsonar.login=${SONAR_TOKEN}
-"""
+                    withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+                        withSonarQubeEnv("${SONARQUBE_ENV}") {
+                            sh """
+                                echo "Running SonarQube Analysis..."
+                                "${scannerHome}/bin/sonar-scanner" \
+                                    -Dsonar.projectKey=my-react-app \
+                                    -Dsonar.sources=src \
+                                    -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                                    -Dsonar.login=${SONAR_TOKEN}
+                            """
+                        }
                     }
-}
                 }
             }
         }
@@ -49,17 +48,43 @@ withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')])
                 sh 'npm run build'
             }
         }
-        
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    def imageTag = "my-react-app:${BUILD_NUMBER}"
+                    sh """
+                        echo "Building Docker image..."
+                        docker build -t ${imageTag} .
+                        docker tag ${imageTag} my-react-app:latest
+                    """
+                }
+            }
+        }
+
+        stage('Docker Scout Scan') {
+            steps {
+                withCredentials([string(credentialsId: 'DOCKERHUB_TOKEN', variable: 'DOCKERHUB_TOKEN')]) {
+                    script {
+                        sh '''
+                            echo "Logging into Docker Hub..."
+                            echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USERNAME:-myusername}" --password-stdin
+
+                            echo "Scanning image with Docker Scout..."
+                            docker scout quickview my-react-app:latest --only-severities critical,high --exit-code
+                        '''
+                    }
+                }
+            }
+        }
+
         stage('Deploy') {
             steps {
                 sh '''
-                    echo "Building Docker image..."
-                    docker build -t my-react-app .
-
-                    echo "Running container..."
+                    echo "Deploying container..."
                     docker stop react-app || true
                     docker rm react-app || true
-                    docker run -d --name react-app -p 4080:80 my-react-app
+                    docker run -d --name react-app -p 4080:80 my-react-app:latest
                 '''
             }
         }

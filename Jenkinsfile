@@ -1,5 +1,6 @@
 pipeline {
     agent any
+
     tools {
         nodejs 'NodeJS v24.10.0 (LTS)'
     }
@@ -62,17 +63,17 @@ pipeline {
             }
         }
 
-        stage('Docker Scout Scan') {
+        stage('Docker Login & Scout Scan') {
             steps {
-                withCredentials([string(credentialsId: 'DOCKERHUB_TOKEN', variable: 'DOCKERHUB_TOKEN')]) {
+                withCredentials([usernamePassword(credentialsId: 'DOCKER_PAT', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     script {
-                        sh '''
+                        sh """
                             echo "Logging into Docker Hub..."
-                            echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USERNAME:-myusername}" --password-stdin
+                            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
 
                             echo "Scanning image with Docker Scout..."
                             docker scout quickview my-react-app:latest --only-severities critical,high --exit-code
-                        '''
+                        """
                     }
                 }
             }

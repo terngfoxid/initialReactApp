@@ -66,7 +66,7 @@ pipeline {
                 script {
                     sh '''
                         echo "Scanning local Docker image with Docker Scout..."
-                        docker scout quickview my-react-app:latest --only-severities critical,high --exit-code
+                        docker scout quickview --exit-code my-react-app:latest
                     '''
                 }
             }

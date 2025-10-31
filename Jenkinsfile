@@ -53,28 +53,21 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def imageTag = "my-react-app:${BUILD_NUMBER}"
-                    sh """
+                    sh '''
                         echo "Building Docker image..."
-                        docker build -t ${imageTag} .
-                        docker tag ${imageTag} my-react-app:latest
-                    """
+                        docker build -t my-react-app .
+                    '''
                 }
             }
         }
 
-        stage('Docker Login & Scout Scan') {
+        stage('Docker Scout Scan') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'DOCKER_PAT', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    script {
-                        sh """
-                            echo "Logging into Docker Hub..."
-                            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-
-                            echo "Scanning image with Docker Scout..."
-                            docker scout quickview my-react-app:latest --only-severities critical,high --exit-code
-                        """
-                    }
+                script {
+                    sh '''
+                        echo "Scanning local Docker image with Docker Scout..."
+                        docker scout quickview my-react-app:latest --only-severities critical,high --exit-code
+                    '''
                 }
             }
         }
@@ -85,7 +78,7 @@ pipeline {
                     echo "Deploying container..."
                     docker stop react-app || true
                     docker rm react-app || true
-                    docker run -d --name react-app -p 4080:80 my-react-app:latest
+                    docker run -d --name react-app -p 4080:80 my-react-app
                 '''
             }
         }

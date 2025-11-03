@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        SONARQUBE_ENV = 'SonarQubeServer'
+        SONARQUBE_ENV = 'SonarQube'
     }
 
     stages {
@@ -27,7 +27,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    def scannerHome = tool 'SonarQube Scanner 7.2.0.5079'
+                    def scannerHome = tool 'SonarQubeScanner'
                     withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
                         withSonarQubeEnv("${SONARQUBE_ENV}") {
                             sh """

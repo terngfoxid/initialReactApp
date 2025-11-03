@@ -5,6 +5,10 @@ pipeline {
         nodejs 'NodeJS v24.10.0 (LTS)'
     }
 
+    environment {
+        SONARQUBE_ENV = 'SonarQubeServer'
+    }
+
     stages {
         /*stage('Checkout') {
             steps {
@@ -17,6 +21,26 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def scannerHome = tool 'SonarQube'
+                    withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+                        withSonarQubeEnv("${SONARQUBE_ENV}") {
+                            sh """
+                                echo "Running SonarQube Analysis..."
+                                "${scannerHome}/bin/sonar-scanner" \
+                                    -Dsonar.projectKey=my-react-app \
+                                    -Dsonar.sources=src \
+                                    -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                                    -Dsonar.login=${SONAR_TOKEN}
+                            """
+                        }
+                    }
+                }
             }
         }
 

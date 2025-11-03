@@ -60,6 +60,17 @@ pipeline {
             }
         }
 
+        stage('Docker Scout Scan') {
+            steps {
+                script {
+                    sh '''
+                        echo "Scanning local Docker image with Docker Scout..."
+                        docker scout quickview my-react-app:latest
+                    '''
+                }
+            }
+        }
+
         stage('Deploy') {
             steps {
                 sh '''

@@ -6,11 +6,13 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
+        /*stage('Checkout') {
             steps {
-                
+                withCredentials([string(credentialsId: 'GitHubPATReact', variable: 'GIT_PAT')]) {
+                    git url: "https://${GIT_PAT}@github.com/terngfoxid/initialReactApp.git", branch: 'main'
+                }
             }
-        }
+        }*/
 
         stage('Install Dependencies') {
             steps {
